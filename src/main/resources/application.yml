@@ -1,0 +1,26 @@
+---
+server:
+  port: 8056
+  contextPath: /ishcrud
+---
+datasource:
+  ishlaw:
+    url: jdbc:mysql://localhost:3306/ishfinal?verifyServerCertificate=false&useSSL=false&requireSSL=false
+    username: root
+    password: root
+    driverClassName: com.mysql.jdbc.Driver
+    defaultSchema:
+    maxPoolSize: 20
+    connectionTimeout: 60000
+    idleTimeout: 600000
+    maxLifetime: 1800000
+    threadSleeptime: 120000
+    hibernate:
+      hbm2ddl.method: validate
+      show_sql: true
+      format_sql: true
+      dialect: org.hibernate.dialect.MySQLDialect
+      timeout: 2000
+
+logging:
+  config: log4j2-spring.xml

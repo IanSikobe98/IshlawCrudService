@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="INFO" monitorInterval="30">
+    <Properties>
+        <Property name="LOG_PATTERN_HUMAN">%d{yyyy-MM-dd HH:mm:ss.S} %-5p %c{1}:%L[%t] - %m%n</Property>
+        <Property name="log_path">logs/ishlaw_crud.log</Property>
+        <Property name="LOG_PATTERN">%d{yyyy-MM-dd HH:mm:ss.SSS}|LogLevel=%clr{%p}|EngineHost=${sys:engine.host}|EngineName=${sys:engine.name}|Target=File|LogPath=${log_path}|Thread=%clr{[%15.15t]}|Logger=[%c{1.}:%L]|OperationName=%X{OperationName}|TransactionReferenceID=%X{TransactionReferenceID}|SourceIP=%X{SourceIP}|LogMsg=%m|ResponseCode=%X{ResponseCode}|LogMsgType=%X{LogMsgType}|MSISDN=%X{MSISDN}|LogStatus=%X{LogStatus}|TransactionCost=%X{TransactionCost}|logDetailedMsg=[%xwEx]%n</Property>
+    </Properties>
+    <Appenders>
+        <!--Directed to Standard Output and captured under nohup.out-->
+        <Console name="Console" target="SYSTEM_OUT" direct="true" follow="false">
+        <Console name="Console" target="SYSTEM_OUT" direct="true" follow="false">
+            <!--Splunk Log format-->
+            <PatternLayout pattern="${LOG_PATTERN_HUMAN}"/>
+        </Console>
+        <!--Directed to log file-->
+        <RollingFile name="RollingFile" fileName="logs/ishlaw_crud.log" filePattern="logs/%d{MMM}/ishlaw_crud_switch-%d{MM-dd-yyyy}-%d{H:mm:s.SSS}.log">
+            <!--Splunk Log format-->
+            <PatternLayout pattern="${LOG_PATTERN}" />
+            <!--Log Rotation Policy. Timebased daily and size basfved-->
+            <Policies>
+                <!--Timebased Triggering. Default is Daily-->
+                <CronTriggeringPolicy schedule="0 0 0 * * ?"/>
+                <!--If you need to rollover based on file-size-->
+                <SizeBasedTriggeringPolicy size="100 MB"/>
+            </Policies>
+            <!--Controls discard of old logs - Default is 6 months.-->
+            <DefaultRolloverStrategy>
+                <Delete basePath="logs" maxDepth="2">
+                    <IfFileName glob="**/ishlaw_crud-*.log" />
+                    <IfLastModified age="10d" />
+                </Delete>
+            </DefaultRolloverStrategy>
+        </RollingFile>
+    </Appenders>
+    <Loggers>
+        <Logger name="org.hibernate.validator.internal.util.Version" level="warn" />
+        <Logger name="org.apache.coyote.http11.Http11NioProtocol" level="warn" />
+        <Logger name="org.apache.tomcat.util.net.NioSelectorPool" level="warn" />
+        <Logger name="com.zaxxer.hikari" level="debug" />
+
+        <Root level="info">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="RollingFile"/>
+        </Root>
+    </Loggers>
+</Configuration>
