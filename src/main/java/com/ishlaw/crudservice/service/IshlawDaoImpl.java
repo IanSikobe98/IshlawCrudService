@@ -23,4 +23,12 @@ public class IshlawDaoImpl {
         List<StaffDetails> staff = databaseCrudService.fetchWithHibernateQuery(query, Collections.EMPTY_MAP);
         return staff;
     }
+
+    public StaffDetails findStaffByMsisdn(String query){
+        List<StaffDetails> members = databaseCrudService.fetchWithHibernateQuery(query, Collections.EMPTY_MAP);
+        StaffDetails member = members==null?null:members.get(0);
+
+        return member;
+
+    }
 }

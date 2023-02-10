@@ -25,4 +25,10 @@ public class CrudTransactionsService {
         List<StaffDetails> staff = new IshlawDaoImpl(crudService,environment).getStaffMembers(query);
         return staff;
     }
+
+    public StaffDetails findStaffByMsisdn(String msisdn) {
+        String query = "select s from StaffDetails s where msisdn ="+"254".concat(msisdn.substring(msisdn.length() - 9));
+        StaffDetails member = new IshlawDaoImpl(crudService,environment).findStaffByMsisdn(query);
+        return member;
+    }
 }
