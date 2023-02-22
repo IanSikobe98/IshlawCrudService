@@ -4,6 +4,7 @@ import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.Date;
 import java.util.Objects;
 
 @Entity
@@ -36,10 +37,12 @@ public class StaffDetails implements Serializable {
     private int status;
     @Basic
     @Column(name = "date_created")
-    private Timestamp dateCreated;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date dateCreated;
     @Basic
     @Column(name = "date_updated")
-    private Timestamp dateUpdated;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date dateUpdated;
     @Basic
     @Column(name = "created_by")
     private int createdBy;
@@ -103,19 +106,19 @@ public class StaffDetails implements Serializable {
         this.status = status;
     }
 
-    public Timestamp getDateCreated() {
+    public Date getDateCreated() {
         return dateCreated;
     }
 
-    public void setDateCreated(Timestamp dateCreated) {
+    public void setDateCreated(Date dateCreated) {
         this.dateCreated = dateCreated;
     }
 
-    public Timestamp getDateUpdated() {
+    public Date getDateUpdated() {
         return dateUpdated;
     }
 
-    public void setDateUpdated(Timestamp dateUpdated) {
+    public void setDateUpdated(Date dateUpdated) {
         this.dateUpdated = dateUpdated;
     }
 

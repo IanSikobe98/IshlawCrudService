@@ -1,5 +1,6 @@
 package com.ishlaw.crudservice.configuration;
 
+import com.ishlaw.crudservice.entity.StaffDetails;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Component;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -46,10 +48,18 @@ public class JwtToken implements Serializable {
         return expiration.before(new Date());
     }
 
-    public String generateMainToken(UserDetails userDetails) {
+    public String generateMainToken(StaffDetails staffDetails, HashSet<String> permissions, HashSet<String> roles) {
         Map<String, Object> claims = new HashMap<>();
-        claims.put("msisdn", userDetails.getUsername());
-        return doGenerateMainToken(claims, userDetails.getUsername());
+        Map<String, Object> team = new HashMap<>();
+        team.put("name",roles);
+        team.put("Permissions",permissions);
+        claims.put("msisdn", staffDetails.getPhoneNumber());
+        claims.put("firstName", staffDetails.getFirstName());
+        claims.put("secondName", staffDetails.getSurname());
+        claims.put("emailAddress", staffDetails.getEmailaddress());
+        claims.put("id", staffDetails.getId());
+        claims.put("Team", team);
+        return doGenerateMainToken(claims, staffDetails.getPhoneNumber());
     }
     private String doGenerateMainToken(Map<String, Object> claims, String subject) {
         return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))

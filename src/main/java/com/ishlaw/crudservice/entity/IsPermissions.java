@@ -16,7 +16,7 @@ public class IsPermissions {
     private String permissionName;
     @Basic
     @Column(name = "permission_description")
-    private int permissionDescription;
+    private String permissionDescription;
     @Basic
     @Column(name = "is_menu")
     private int isMenu;
@@ -43,11 +43,11 @@ public class IsPermissions {
         this.permissionName = permissionName;
     }
 
-    public int getPermissionDescription() {
+    public String getPermissionDescription() {
         return permissionDescription;
     }
 
-    public void setPermissionDescription(int permissionDescription) {
+    public void setPermissionDescription(String permissionDescription) {
         this.permissionDescription = permissionDescription;
     }
 
@@ -80,7 +80,7 @@ public class IsPermissions {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         IsPermissions that = (IsPermissions) o;
-        return id == that.id && permissionDescription == that.permissionDescription && isMenu == that.isMenu && menuLevel == that.menuLevel && Objects.equals(permissionName, that.permissionName) && Objects.equals(dateCreated, that.dateCreated);
+        return id == that.id && isMenu == that.isMenu && menuLevel == that.menuLevel && Objects.equals(permissionName, that.permissionName) && Objects.equals(permissionDescription, that.permissionDescription) && Objects.equals(dateCreated, that.dateCreated);
     }
 
     @Override

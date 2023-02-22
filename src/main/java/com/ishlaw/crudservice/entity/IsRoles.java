@@ -5,7 +5,7 @@ import java.sql.Timestamp;
 import java.util.Objects;
 
 @Entity
-@Table(name = "is_roles")
+@Table(name = "is_roles", schema = "ishfinal", catalog = "")
 public class IsRoles {
     @Basic
     @Column(name = "title")
@@ -15,7 +15,7 @@ public class IsRoles {
     private String description;
     @Basic
     @Column(name = "intrash")
-    private int intrash;
+    private String intrash;
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "id")
@@ -23,6 +23,14 @@ public class IsRoles {
     @Basic
     @Column(name = "date_created")
     private Timestamp dateCreated;
+
+    public String getIntrash() {
+        return intrash;
+    }
+
+    public void setIntrash(String intrash) {
+        this.intrash = intrash;
+    }
 
     public String getTitle() {
         return title;
@@ -38,14 +46,6 @@ public class IsRoles {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public int getIntrash() {
-        return intrash;
-    }
-
-    public void setIntrash(int intrash) {
-        this.intrash = intrash;
     }
 
     public int getId() {

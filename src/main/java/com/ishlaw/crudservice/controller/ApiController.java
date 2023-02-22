@@ -28,7 +28,7 @@ public class ApiController {
     CrudTransactionsService crudTransactionsService;
 
     @Autowired
-    private Environment environment;
+    Environment environment;
 
 
     @RequestMapping(value = "/getstaffdetails", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)

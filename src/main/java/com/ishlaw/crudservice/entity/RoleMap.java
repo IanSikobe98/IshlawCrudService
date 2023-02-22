@@ -2,6 +2,7 @@ package com.ishlaw.crudservice.entity;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.Date;
 import java.util.Objects;
 
 @Entity
@@ -19,7 +20,8 @@ public class RoleMap {
     private int userId;
     @Basic
     @Column(name = "date_created")
-    private Timestamp dateCreated;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date dateCreated;
 
     public int getId() {
         return id;
@@ -45,11 +47,11 @@ public class RoleMap {
         this.userId = userId;
     }
 
-    public Timestamp getDateCreated() {
+    public Date getDateCreated() {
         return dateCreated;
     }
 
-    public void setDateCreated(Timestamp dateCreated) {
+    public void setDateCreated(Date dateCreated) {
         this.dateCreated = dateCreated;
     }
 

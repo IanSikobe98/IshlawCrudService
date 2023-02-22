@@ -23,6 +23,12 @@ datasource:
       format_sql: true
       dialect: org.hibernate.dialect.MySQLDialect
       timeout: 2000
+    passwordValidation:
+      passwordSpecCharacters: "@!$%#*%-_+"
+      passwordMinLength: "6"
+
+
+
 
 logging:
   config: log4j2-spring.xml
