@@ -10,4 +10,6 @@ public interface WebUserService {
     ApiResponse authenticateUser(HashMap<String, String> requestMap);
 
     ApiResponse createUser(HashMap<String, String> requestMap);
+
+    ApiResponse decodeToken(String tokenString);
 }

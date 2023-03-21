@@ -9,6 +9,7 @@ import com.ishlaw.crudservice.entity.StaffDetails;
 import com.ishlaw.crudservice.entity.UserPermissionReport;
 import com.ishlaw.crudservice.exceptions.IshlawException;
 import com.ishlaw.crudservice.model.ApiResponse;
+import com.ishlaw.crudservice.model.Token;
 import com.ishlaw.crudservice.repositories.CrudService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -226,7 +227,29 @@ public class WebUserServiceImpl implements WebUserService{
 
 
     }
+    @Override
+    public ApiResponse decodeToken(String tokenString){
+        Token token = new Token();
+        ApiResponse response = new ApiResponse();
+        try{
+            token = jwtToken.getDetailsFromToken(tokenString);
+            response.setMessage("Successful");
+            response.setResponseCode("00");
+            response.setResponseBody(token);
+            log.info("User Details {}",token);
 
+
+        } catch (Exception e){
+            e.printStackTrace();
+            response.setResponseCode(IshlawConstants.ApiResponseCodes.GENERAL_ERROR.getCode());
+            response.setMessage("Error Ocurred Processing Request.Please try again later");
+            log.info("Error decoding {}",tokenString);
+            return response;
+
+        }
+        return response;
+
+    }
     public String cleanPhone(String msisdn){
         String cleanPhone = msisdn;
         cleanPhone = "254".concat(msisdn.substring(msisdn.length() - 9));

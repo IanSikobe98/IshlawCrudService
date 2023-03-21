@@ -1,6 +1,7 @@
 package com.ishlaw.crudservice.configuration;
 
 import com.ishlaw.crudservice.entity.StaffDetails;
+import com.ishlaw.crudservice.model.Token;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -27,6 +28,19 @@ public class JwtToken implements Serializable {
 
     public String getUsernameFromToken(String token) {
         return getClaimFromToken(token, Claims::getSubject);
+    }
+
+    public Token getDetailsFromToken(String token) {
+        final Claims claims = getAllClaimsFromToken(token);
+        Token tokenmodel = new Token();
+        tokenmodel.setFirstName(claims.get("firstName", String.class));
+        tokenmodel.setSecondName(claims.get("secondName", String.class));
+        tokenmodel.setMsisdn(claims.get("msisdn", String.class));
+        tokenmodel.setEmailAddress(claims.get("emailAddress", String.class));
+        tokenmodel.setTeam(claims.get("Team", Object.class));
+        tokenmodel.setId(claims.get("id",Integer.class));
+        return  tokenmodel;
+
     }
 
 

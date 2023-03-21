@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -63,6 +64,25 @@ public class AuthController {
             e.printStackTrace();
             response.setResponseCode(IshlawConstants.ApiResponseCodes.GENERAL_ERROR.getCode());
             response.setMessage("Error Ocurred Processing Request.Please try again later");
+
+
+        }
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/getUserDetails", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> getUserDetails( HttpServletRequest request){
+        ApiResponse response = new ApiResponse();
+        log.info("POST /getUserDetails | body :: {}",  request.getHeader("Ulinzi"));
+        try{
+            String requestTokenHeader = request.getHeader("Ulinzi");
+            response = webUserService.decodeToken(requestTokenHeader.substring(7));
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            response.setResponseCode(IshlawConstants.ApiResponseCodes.GENERAL_ERROR.getCode());
+            response.setMessage("Error Ocurred Processing Request.Please try again later");
+            log.info("Error occurred decodeing token  for payload{}",request);
 
 
         }
