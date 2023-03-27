@@ -12,4 +12,12 @@ public interface WebUserService {
     ApiResponse createUser(HashMap<String, String> requestMap);
 
     ApiResponse decodeToken(String tokenString);
+
+    ApiResponse getMembers();
+
+    ApiResponse getMemberById(int id);
+
+    ApiResponse getRoles();
+
+    ApiResponse resetPassword(HashMap<String,String> requestMap);
 }

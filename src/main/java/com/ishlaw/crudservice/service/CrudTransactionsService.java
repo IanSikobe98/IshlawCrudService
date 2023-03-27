@@ -1,5 +1,6 @@
 package com.ishlaw.crudservice.service;
 
+import com.ishlaw.crudservice.entity.IsRoles;
 import com.ishlaw.crudservice.entity.StaffDetails;
 import com.ishlaw.crudservice.entity.UserPermissionReport;
 import com.ishlaw.crudservice.repositories.CrudService;
@@ -24,9 +25,22 @@ public class CrudTransactionsService {
     CrudService crudService;
 
     public List<StaffDetails> getStaffMembers() {
-        String query ="select s from StaffDetails s";
+        String query ="select s from StaffDetails s where status = 1";
         List<StaffDetails> staff = new IshlawDaoImpl(crudService,environment).getStaffMembers(query);
         return staff;
+    }
+
+    public List<IsRoles> getRoles() {
+        String query ="select s from IsRoles s";
+        List<IsRoles> roles = new IshlawDaoImpl(crudService,environment).getRoles(query);
+        return roles;
+    }
+
+    public StaffDetails getMemberById(int id) {
+        String query ="select s from StaffDetails s where status = 1 and id ="+id+"";
+        List<StaffDetails> staff = new IshlawDaoImpl(crudService,environment).getStaffMembers(query);
+        StaffDetails member = staff.isEmpty()?null: staff.get(0);
+        return member;
     }
 
     public StaffDetails findStaffByMsisdn(String msisdn) {

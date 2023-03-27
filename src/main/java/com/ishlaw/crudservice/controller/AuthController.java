@@ -53,6 +53,23 @@ public class AuthController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/resetPassword", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> resetPassword(@RequestBody HashMap<String,String> requestMap,HttpServletRequest request){
+        ApiResponse response = new ApiResponse();
+        log.info("POST /resetPassword| body :: {}",  requestMap);
+        try{
+            response = webUserService.resetPassword(requestMap);
+        }
+        catch (Exception e) {
+            log.info(e.getMessage());
+            response.setResponseCode(IshlawConstants.ApiResponseCodes.GENERAL_ERROR.getCode());
+            response.setMessage("Error Ocurred Processing Request.Please try again later");
+
+
+        }
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
     @RequestMapping(value = "/createUser", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> createUser(@RequestBody HashMap<String,String> requestMap){
         ApiResponse response = new ApiResponse();

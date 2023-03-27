@@ -1,5 +1,6 @@
 package com.ishlaw.crudservice.service;
 
+import com.ishlaw.crudservice.entity.IsRoles;
 import com.ishlaw.crudservice.entity.StaffDetails;
 import com.ishlaw.crudservice.entity.UserPermissionReport;
 import com.ishlaw.crudservice.repositories.CrudService;
@@ -23,6 +24,11 @@ public class IshlawDaoImpl {
     public List<StaffDetails> getStaffMembers(String query) {
         List<StaffDetails> staff = databaseCrudService.fetchWithHibernateQuery(query, Collections.EMPTY_MAP);
         return staff;
+    }
+
+    public List<IsRoles> getRoles(String query) {
+        List<IsRoles> roles = databaseCrudService.fetchWithHibernateQuery(query, Collections.EMPTY_MAP);
+        return roles;
     }
 
     public StaffDetails findStaffByMsisdn(String query){

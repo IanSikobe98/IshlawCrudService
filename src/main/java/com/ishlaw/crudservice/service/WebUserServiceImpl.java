@@ -4,11 +4,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ishlaw.crudservice.Utils.IshlawConstants;
 import com.ishlaw.crudservice.Utils.SharedFunctions;
 import com.ishlaw.crudservice.configuration.JwtToken;
+import com.ishlaw.crudservice.entity.IsRoles;
 import com.ishlaw.crudservice.entity.RoleMap;
 import com.ishlaw.crudservice.entity.StaffDetails;
 import com.ishlaw.crudservice.entity.UserPermissionReport;
 import com.ishlaw.crudservice.exceptions.IshlawException;
 import com.ishlaw.crudservice.model.ApiResponse;
+import com.ishlaw.crudservice.model.StaffDetailsDTO;
 import com.ishlaw.crudservice.model.Token;
 import com.ishlaw.crudservice.repositories.CrudService;
 import lombok.extern.slf4j.Slf4j;
@@ -94,7 +96,7 @@ public class WebUserServiceImpl implements WebUserService{
                     }
                     else{
                         log.error("Wrong password credentials provided for   msisdn :: {}", msisdn);
-                        throw new IshlawException("Wrong password credentials provided for", IshlawConstants.ApiResponseCodes.GENERAL_ERROR, "Wrong credentials", HttpStatus.UNAUTHORIZED);
+                        throw new IshlawException("Wrong password credentials provided for"+ msisdn, IshlawConstants.ApiResponseCodes.GENERAL_ERROR, "Wrong credentials", HttpStatus.UNAUTHORIZED);
                     }
                 }
                 else{
@@ -250,6 +252,221 @@ public class WebUserServiceImpl implements WebUserService{
         return response;
 
     }
+    @Override
+    public ApiResponse getMembers(){
+        ApiResponse response = new ApiResponse();
+        List<StaffDetailsDTO> stafflist= new ArrayList<>();
+        try{
+           List<StaffDetails> members = crudTransactionsService.getStaffMembers();
+           if(members.isEmpty()){
+               throw new IshlawException("The are no registered members at the moment", IshlawConstants.ApiResponseCodes.GENERAL_ERROR, "The are no registered members at the moment", HttpStatus.OK);
+           }
+           members.stream().forEach(member ->{
+               StaffDetailsDTO staffDetailsDTO = new StaffDetailsDTO();
+               staffDetailsDTO.setId(member.getId());
+               staffDetailsDTO.setFirstName(member.getFirstName());
+               staffDetailsDTO.setSurname(member.getSurname());
+               staffDetailsDTO.setPhoneNumber(member.getPhoneNumber());
+               staffDetailsDTO.setEmailaddress(member.getEmailaddress());
+               staffDetailsDTO.setStatus(member.getStatus());
+               staffDetailsDTO.setCreatedBy(member.getCreatedBy());
+               staffDetailsDTO.setUpdatedBy(member.getUpdatedBy());
+               staffDetailsDTO.setDateCreated(member.getDateCreated());
+               staffDetailsDTO.setDateUpdated(member.getDateUpdated());
+               stafflist.add(staffDetailsDTO);
+           });
+
+            response.setResponseCode("00");
+            response.setResponseBody(stafflist);
+            response.setMessage("success!");
+
+            return  response;
+
+        }catch (IshlawException e) {
+            response.setResponseCode(e.getResponseCode().getCode());
+            response.setMessage(e.getMessage());
+            return response;
+        }
+
+        catch (Exception e){
+            e.printStackTrace();
+            response.setResponseCode(IshlawConstants.ApiResponseCodes.GENERAL_ERROR.getCode());
+            response.setMessage("Error Ocurred Processing Request.Please try again later");
+            log.info("Error occurred fetching customer details {}");
+            return response;
+
+        }
+
+    }
+
+    public ApiResponse getMemberById(int id){
+        ApiResponse response = new ApiResponse();
+        List<StaffDetailsDTO> stafflist= new ArrayList<>();
+        try{
+            StaffDetails member = crudTransactionsService.getMemberById(id);
+            if(member == null){
+                throw new IshlawException("The are no registered members with id given at the moment", IshlawConstants.ApiResponseCodes.GENERAL_ERROR, "The are no registered members with id given at the moment", HttpStatus.OK);
+            }
+
+                StaffDetailsDTO staffDetailsDTO = new StaffDetailsDTO();
+                staffDetailsDTO.setId(member.getId());
+                staffDetailsDTO.setFirstName(member.getFirstName());
+                staffDetailsDTO.setSurname(member.getSurname());
+                staffDetailsDTO.setPhoneNumber(member.getPhoneNumber());
+                staffDetailsDTO.setEmailaddress(member.getEmailaddress());
+                staffDetailsDTO.setStatus(member.getStatus());
+                staffDetailsDTO.setCreatedBy(member.getCreatedBy());
+                staffDetailsDTO.setUpdatedBy(member.getUpdatedBy());
+                staffDetailsDTO.setDateCreated(member.getDateCreated());
+                staffDetailsDTO.setDateUpdated(member.getDateUpdated());
+
+
+            response.setResponseCode("00");
+            response.setResponseBody(staffDetailsDTO);
+            response.setMessage("success!");
+
+            return  response;
+
+        }catch (IshlawException e) {
+            response.setResponseCode(e.getResponseCode().getCode());
+            response.setMessage(e.getMessage());
+            return response;
+        }
+
+        catch (Exception e){
+            e.printStackTrace();
+            response.setResponseCode(IshlawConstants.ApiResponseCodes.GENERAL_ERROR.getCode());
+            response.setMessage("Error Ocurred Processing Request.Please try again later");
+            log.info("Error occurred fetching customer details {}");
+            return response;
+
+        }
+
+    }
+
+    @Override
+    public ApiResponse getRoles(){
+        ApiResponse response = new ApiResponse();
+        List<IsRoles> rolesList= new ArrayList<>();
+        try{
+            rolesList = crudTransactionsService.getRoles();
+            if(rolesList.isEmpty()){
+                throw new IshlawException("The are exists no roles", IshlawConstants.ApiResponseCodes.GENERAL_ERROR, "There exists no roles", HttpStatus.OK);
+            }
+
+
+            response.setResponseCode("00");
+            response.setResponseBody(rolesList);
+            response.setMessage("success!");
+
+            return  response;
+
+        }catch (IshlawException e) {
+            response.setResponseCode(e.getResponseCode().getCode());
+            response.setMessage(e.getMessage());
+            return response;
+        }
+
+        catch (Exception e){
+            e.printStackTrace();
+            response.setResponseCode(IshlawConstants.ApiResponseCodes.GENERAL_ERROR.getCode());
+            response.setMessage("Error Ocurred Processing Request.Please try again later");
+            log.info("Error occurred fetching customer details {}");
+            return response;
+
+        }
+
+    }
+
+
+    @Override
+    public ApiResponse resetPassword(HashMap<String,String> requestMap){
+        userManagerService = new UserManagerService(passwordencoder,environment);
+        ApiResponse response = new ApiResponse();
+        ObjectMapper mapper = new ObjectMapper();
+        log.info("Reset Password | body :: {}",  requestMap);
+        String oldPassword = requestMap.getOrDefault("oldPassword","");
+        String newPassword = requestMap.getOrDefault("newPassword","");
+        String msisdn = requestMap.getOrDefault("msisdn","");
+
+        try{
+            if (!StringUtils.hasText(msisdn)) {
+                log.warn("Invalid msisdn :: {}", msisdn);
+                throw new IshlawException("Invalid msisdn", IshlawConstants.ApiResponseCodes.GENERAL_ERROR, "Please input Username", HttpStatus.BAD_REQUEST);
+            }
+            if (!StringUtils.hasText(oldPassword)) {
+                log.warn("Invalid password :: {}", oldPassword);
+                throw new IshlawException("Invalid password", IshlawConstants.ApiResponseCodes.GENERAL_ERROR, "Please input password", HttpStatus.BAD_REQUEST);
+            }
+            if (!StringUtils.hasText(newPassword)) {
+                log.warn("Invalid password :: {}", newPassword);
+                throw new IshlawException("Invalid password", IshlawConstants.ApiResponseCodes.GENERAL_ERROR, "Please input password", HttpStatus.BAD_REQUEST);
+            }
+
+            log.info("Checking if staff member exists exists ...........");
+            StaffDetails member = crudTransactionsService.findStaffByMsisdn(msisdn);
+            if(member !=null){
+                log.info("Member exists |Details {} | .Checking if staff member exists is active ...........",mapper.writeValueAsString(member));
+                if(member.getStatus() == 1){
+                    log.info("Member is active.Verifying password ...........");
+                    requestMap.put("phoneNumber",member.getPhoneNumber());
+                    requestMap.put("firstName", member.getFirstName());
+                    requestMap.put("secondName",member.getSurname());
+                    String key = environment.getRequiredProperty("datasource.ishlaw.secret");
+                    String hashedPassword = SharedFunctions.hashPassword(oldPassword.toCharArray(), key.getBytes(StandardCharsets.UTF_8), 1000, 256);
+                    log.info("hashed password " + hashedPassword);
+                    if (member.getPassword().equalsIgnoreCase(hashedPassword)) {
+                        log.info("Member was verified successfully.validating new Password.......");
+                        Map<String, Object> passwordValidation = userManagerService.validatePassword(requestMap ,newPassword);
+                        Boolean passwordValid = passwordValidation.get("isValid").equals("yes") ? true : false;
+                        log.info("password validation "+ passwordValid);
+                        if(passwordValid){
+                            member.setPassword(SharedFunctions.hashPassword(newPassword.toCharArray(), key.getBytes(StandardCharsets.UTF_8), 1000, 256));
+                            crudService.saveOrUpdate(member);
+                            response.setResponseCode("00");
+                            response.setMessage("Successful Reset Password");
+                            log.info("Successful Reset Password {}" ,msisdn );
+                            return response;
+                        }
+                        else{
+                            log.info("Password not valid:");
+                            response.setResponseCode("01");
+                            response.setMessage(String.valueOf((List) passwordValidation.get("errors")));
+                            return  response;
+                        }
+                    }
+                    else{
+                        log.error("Wrong password credentials provided for msisdn :: {}", msisdn);
+                        throw new IshlawException("Wrong password credentials provided for"+msisdn, IshlawConstants.ApiResponseCodes.GENERAL_ERROR, "Wrong credentials", HttpStatus.UNAUTHORIZED);
+                    }
+                }
+                else{
+                    log.error("Member is not active in StaffDetails with member  msisdn :: {}", msisdn);
+                    throw new IshlawException("Member is not active ", IshlawConstants.ApiResponseCodes.GENERAL_ERROR, "Wrong credentials", HttpStatus.UNAUTHORIZED);
+                }
+            }
+            else{
+                log.error("Member not found in StaffDetails with member  msisdn :: {}", msisdn);
+                throw new IshlawException("Member does not exist", IshlawConstants.ApiResponseCodes.GENERAL_ERROR, "Wrong credentials", HttpStatus.UNAUTHORIZED);
+            }
+
+    }catch (IshlawException e) {
+        response.setResponseCode(e.getResponseCode().getCode());
+        response.setMessage(e.getMessage());
+        return response;
+    }
+
+        catch (Exception e){
+        e.printStackTrace();
+        response.setResponseCode(IshlawConstants.ApiResponseCodes.GENERAL_ERROR.getCode());
+        response.setMessage("Error Ocurred Processing Request.Please try again later");
+        log.info("Error occurred fetching customer details {}");
+        return response;
+
+    }
+    }
+
+
     public String cleanPhone(String msisdn){
         String cleanPhone = msisdn;
         cleanPhone = "254".concat(msisdn.substring(msisdn.length() - 9));
