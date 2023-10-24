@@ -8,7 +8,6 @@
     <Appenders>
         <!--Directed to Standard Output and captured under nohup.out-->
         <Console name="Console" target="SYSTEM_OUT" direct="true" follow="false">
-        <Console name="Console" target="SYSTEM_OUT" direct="true" follow="false">
             <!--Splunk Log format-->
             <PatternLayout pattern="${LOG_PATTERN_HUMAN}"/>
         </Console>

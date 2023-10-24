@@ -87,7 +87,7 @@ public class AuthController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/getUserDetails", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/getUserDetails", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getUserDetails( HttpServletRequest request){
         ApiResponse response = new ApiResponse();
         log.info("POST /getUserDetails | body :: {}",  request.getHeader("Ulinzi"));
